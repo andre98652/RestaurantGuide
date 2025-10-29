@@ -3,45 +3,22 @@ package com.example.restaurantguide
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.restaurantguide.ui.theme.RestaurantGuideTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.lightColorScheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.restaurantguide.ui.AppScaffold
+import com.example.restaurantguide.viewmodel.NoticeViewModel
+import com.example.restaurantguide.viewmodel.RestaurantViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
-            RestaurantGuideTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+            MaterialTheme(colorScheme = lightColorScheme()) {
+                val vm: RestaurantViewModel = viewModel()
+                val nm: NoticeViewModel = viewModel()
+                AppScaffold(vm = vm, nm = nm)
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RestaurantGuideTheme {
-        Greeting("Android")
     }
 }

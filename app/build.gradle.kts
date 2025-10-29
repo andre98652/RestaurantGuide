@@ -72,5 +72,9 @@ dependencies {
     // --- WorkManager (simular avisos en background) ---
     implementation("androidx.work:work-runtime-ktx:2.9.1")
 
+    // Íconos de Material (para Icons.Default.*)
+    implementation("androidx.compose.material:material-icons-extended")
+
+
 
 }
