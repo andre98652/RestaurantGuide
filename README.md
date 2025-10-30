@@ -99,6 +99,20 @@ BottomBar => (Home / Favoritos / Avisos / Perfil)
 
 ---
 
+## Instalación y Ejecución
+- Para ejecutar el proyecto en **Android Studio**:
+
+1. Clonar el repositorio:
+
+   ```bash
+   git clone https://github.com/andre98652/RestaurantGuide.git
+2. Abrir Android Studio y seleccionar "Open an Existing Project", luego buscar la carpeta del proyecto clonado.
+3.  Asegurarse de que Gradle sincronice todas las dependencias.
+4. Conectar un dispositivo físico o usar el emulador de Android Studio
+5. Ejecutar la aplicación dando al botón Run (Shift + F10).
+
+---
+
 ## Mejoras futuras (para Entregable 3)
 - Integrar **Maps Intent / GPS** en “Ver ubicación”.
 - Agregar **Foreground y Background Services** (notificaciones y sincronización).
