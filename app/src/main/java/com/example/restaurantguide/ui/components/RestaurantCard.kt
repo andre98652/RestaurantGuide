@@ -1,6 +1,5 @@
 package com.example.restaurantguide.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ElevatedCard
@@ -15,6 +14,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.restaurantguide.R
 import com.example.restaurantguide.ui.theme.StarYellow
 
@@ -25,20 +25,28 @@ fun RestaurantCard(
     priceLevel: Int,
     address: String,
     rating: Double,
+    imageUrls: String,              // 👈 NUEVO: pasa aquí el CSV de URLs del restaurante
     onClick: () -> Unit
 ) {
     ElevatedCard(onClick = onClick) {
         Column(Modifier.fillMaxWidth().padding(12.dp)) {
 
-            // Imagen 16:9 (usa un drawable de muestra por ahora)
-            Image(
-                painter = painterResource(id = R.drawable.sample_restaurant), // crea este drawable
+            // 👇 Toma la primera URL válida; si no hay, usa drawable de fallback
+            val mainUrl = imageUrls
+                .split(";")
+                .map { it.trim() }
+                .firstOrNull { it.isNotEmpty() }
+
+            AsyncImage(
+                model = mainUrl,
                 contentDescription = null,
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(R.drawable.sample_restaurant),
+                error = painterResource(R.drawable.sample_restaurant),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(180.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
+                    .clip(RoundedCornerShape(12.dp))
             )
 
             Spacer(Modifier.height(10.dp))

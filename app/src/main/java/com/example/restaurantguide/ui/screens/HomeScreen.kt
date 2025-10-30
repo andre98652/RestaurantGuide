@@ -84,7 +84,8 @@ fun HomeScreen(
                     priceLevel = r.priceLevel,
                     address = r.address,
                     rating = r.rating,
-                    onClick = { onOpenDetail(r.id) }
+                    onClick = { onOpenDetail(r.id) },
+                    imageUrls = r.imageUrls
                 )
             }
         }
