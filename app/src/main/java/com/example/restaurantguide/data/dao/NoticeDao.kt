@@ -14,4 +14,14 @@ interface NoticeDao {
 
     @Query("DELETE FROM notices")
     suspend fun clear()
+
+    @Query("UPDATE notices SET isRead = 1 WHERE id = :id")
+    suspend fun markRead(id: Long)
+
+    @Query("UPDATE notices SET isRead = 1")
+    suspend fun markAllRead()
+
+    @Update
+    suspend fun update(item: Notice)
+
 }

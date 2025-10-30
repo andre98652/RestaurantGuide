@@ -11,15 +11,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.restaurantguide.ui.theme.OnPrimary
 import com.example.restaurantguide.ui.theme.RedPrimary
-
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Text
+import androidx.compose.ui.unit.dp
+import com.example.restaurantguide.ui.theme.OnPrimary
+import com.example.restaurantguide.ui.theme.RedPrimary
 @Composable
 fun CategoryChips(
     categories: List<String>,
     selected: String,
     onSelect: (String) -> Unit
 ) {
-    Row {
-        categories.forEachIndexed { i, cat ->
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 4.dp),
+        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
+    ) {
+        items(categories, key = { it }) { cat ->
             val isSelected = selected.equals(cat, ignoreCase = true)
             FilterChip(
                 selected = isSelected,
@@ -30,7 +40,6 @@ fun CategoryChips(
                     selectedLabelColor = OnPrimary
                 )
             )
-            if (i != categories.lastIndex) Spacer(Modifier.width(8.dp))
         }
     }
 }
