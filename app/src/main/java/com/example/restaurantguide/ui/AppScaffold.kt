@@ -11,6 +11,11 @@ import com.example.restaurantguide.viewmodel.RestaurantViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.getValue
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.example.restaurantguide.ui.components.AppTopBar
 
 @Composable
 fun AppScaffold(
@@ -21,7 +26,24 @@ fun AppScaffold(
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route ?: Routes.HOME
 
+    // Mapea título y si muestra “volver”
+    val (title, showBack) = when {
+        currentRoute.startsWith(Routes.DETAIL.substringBefore("/{")) -> "Detalle" to true
+        currentRoute.startsWith(Routes.CATEGORY.substringBefore("/{")) -> "Categoría" to true
+        currentRoute == Routes.FAVORITES -> "Favoritos" to false
+        currentRoute == Routes.NOTICES -> "Avisos" to false
+        currentRoute == Routes.PROFILE -> "Perfil" to false
+        else -> "Restaurantes" to false // HOME
+    }
+
     Scaffold(
+        topBar = {
+            AppTopBar(
+                title = title,
+                showBack = showBack,
+                onBack = { navController.popBackStack() }
+            )
+        },
         bottomBar = {
             BottomBar(
                 current = currentRoute,
