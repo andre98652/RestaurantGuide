@@ -9,7 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.restaurantguide.viewmodel.RestaurantViewModel
-
+import com.example.restaurantguide.ui.components.RestaurantCard
 @Composable
 fun CategoryScreen(category: String, vm: RestaurantViewModel, onOpenDetail: (Long) -> Unit) {
     val list = vm.byCuisineFlow(category).collectAsState()
@@ -17,11 +17,14 @@ fun CategoryScreen(category: String, vm: RestaurantViewModel, onOpenDetail: (Lon
         Text("Categoría: $category", style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(12.dp))
         LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            items(list.value) { r ->
-                RestaurantCardSimple(
+            items(list.value, key = { it.id }) { r ->
+                RestaurantCard(
                     title = r.name,
-                    subtitle = "${r.cuisine}  ${"$".repeat(r.priceLevel)} · ${r.address}",
+                    cuisine = r.cuisine,
+                    priceLevel = r.priceLevel,
+                    address = r.address,
                     rating = r.rating,
+                    imageUrls = r.imageUrls,  // 👈 primera URL como miniatura
                     onClick = { onOpenDetail(r.id) }
                 )
             }
