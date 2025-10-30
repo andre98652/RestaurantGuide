@@ -23,11 +23,11 @@ class RestaurantViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _home = MutableStateFlow(HomeUiState())
     val home: StateFlow<HomeUiState> = _home.asStateFlow()
-
+    private var seeded = false
     init {
-        // Seed mínimo para demo (si lo necesitas rápido)
         viewModelScope.launch {
-            if (all.value.isEmpty()) {
+            val count = repo.count()
+            if (count == 0) {
                 val seed = listOf(
                     Restaurant(name="La Terraza", cuisine="Peruana", priceLevel=2, address="Av. Principal 123",
                         schedule="13:00 - 23:30", rating=4.5, description="Vista panorámica."),
@@ -42,7 +42,7 @@ class RestaurantViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
 
-        // Suscripción para mantener items filtrados en Home
+        // Mantener items filtrados en Home
         viewModelScope.launch {
             combine(all, _home) { list, ui ->
                 val filtered = list.filter { r ->
@@ -53,6 +53,7 @@ class RestaurantViewModel(app: Application) : AndroidViewModel(app) {
             }.collect { _home.value = it }
         }
     }
+
 
     fun updateQuery(q: String) { _home.update { it.copy(query = q) } }
     fun selectCuisine(c: String) { _home.update { it.copy(selectedCuisine = c) } }

@@ -14,4 +14,7 @@ class RestaurantRepository(private val dao: RestaurantDao) {
         val current = dao.getById(id) ?: return
         dao.update(current.copy(isFavorite = !current.isFavorite))
     }
+
+    suspend fun count(): Int = dao.count()
+
 }

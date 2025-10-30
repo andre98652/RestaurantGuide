@@ -26,4 +26,8 @@ interface RestaurantDao {
 
     @Query("DELETE FROM restaurants")
     suspend fun clear()
+
+    @Query("SELECT COUNT(*) FROM restaurants")
+    suspend fun count(): Int
+
 }
