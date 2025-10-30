@@ -116,9 +116,3 @@ El proyecto cumple con todos los requerimientos del **PROY2**:
 
 Este entregable sienta las bases para el **PROY3**, donde se incorporarán los servicios de fondo, ubicación y lógica avanzada.
 
----
-
-### 👩‍💻 Desarrollado por los estudiantes de la Universidad Nacional del Altiplano - Puno
-**Curso:** Ingeniería de Desarrollo de Nuevos Productos (IDNP)
-
-> "Un grupo, una idea, una app: RestaurantGuide."
