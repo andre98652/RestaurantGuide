@@ -30,7 +30,8 @@ class RestaurantViewModel(app: Application) : AndroidViewModel(app) {
             if (count == 0) {
                 val seed = listOf(
                     Restaurant(name="La Terraza", cuisine="Peruana", priceLevel=2, address="Av. Principal 123",
-                        schedule="13:00 - 23:30", rating=4.5, description="Vista panorámica."),
+                        schedule="13:00 - 23:30", rating=4.5, description="Vista panorámica.", imageUrls = "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/16/e8/98/e2/hermoza-vista-de-las.jpg?w=900&h=500&s=1;" +
+                                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROJAZqJUzGiwN-L24W5-NARNHllb1Y8Id8zg&s"),
                     Restaurant(name="Il Forno", cuisine="Italiana", priceLevel=3, address="Calle Roma 456",
                         schedule="13:00 - 23:30", rating=4.8, description="Pastas a la leña."),
                     Restaurant(name="Sushi Zen", cuisine="Japonesa", priceLevel=2, address="Jr. Sakura 77",
