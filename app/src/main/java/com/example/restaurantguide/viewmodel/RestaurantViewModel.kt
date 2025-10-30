@@ -58,9 +58,11 @@ class RestaurantViewModel(app: Application) : AndroidViewModel(app) {
     fun updateQuery(q: String) { _home.update { it.copy(query = q) } }
     fun selectCuisine(c: String) { _home.update { it.copy(selectedCuisine = c) } }
 
-    fun favorites(): StateFlow<List<Restaurant>> =
-        repo.favorites().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    //fun favorites(): StateFlow<List<Restaurant>> =
+    //    repo.favorites().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
+    val favorites: StateFlow<List<Restaurant>> =
+        repo.favorites().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
     fun byCuisineFlow(c: String): StateFlow<List<Restaurant>> =
         repo.byCuisine(c).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 

@@ -12,7 +12,7 @@ import com.example.restaurantguide.viewmodel.RestaurantViewModel
 
 @Composable
 fun FavoritesScreen(vm: RestaurantViewModel, onOpenDetail: (Long) -> Unit) {
-    val favs = vm.favorites().collectAsState()
+    val favs = vm.favorites.collectAsState()
     Column(Modifier.fillMaxSize().padding(12.dp)) {
         Text("Favoritos", style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(12.dp))
