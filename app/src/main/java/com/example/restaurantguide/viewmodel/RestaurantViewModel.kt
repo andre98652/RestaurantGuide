@@ -16,7 +16,7 @@ data class HomeUiState(
 )
 
 class RestaurantViewModel(app: Application) : AndroidViewModel(app) {
-    private val repo = RestaurantRepository(AppDatabase.get(app).restaurantDao())
+    private val repo = RestaurantRepository(AppDatabase.get(app).restaurantDao()) //crear repo
 
     val all: StateFlow<List<Restaurant>> =
         repo.all().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
@@ -70,10 +70,13 @@ class RestaurantViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             combine(all, _home) { list, ui ->
                 val filtered = list.filter { r ->
+                    //La cocina debe coincidir con el filtro seleccionado o el filtro debe ser “Todos”.
+                    //La búsqueda (query) debe estar vacía o el nombre/cocina debe contener el texto buscado.
                     (ui.selectedCuisine == "Todos" || r.cuisine.equals(ui.selectedCuisine, true)) &&
                             (ui.query.isBlank() || r.name.contains(ui.query, true) || r.cuisine.contains(ui.query, true))
                 }
-                ui.copy(items = filtered)
+                ui.copy(items = filtered)//Compose detecta nuevas referencias de estado y se recompone correctamente.
+                                        //Mutar listas internas sin cambiar la referencia del estado no dispararía recomposición.
             }.collect { _home.value = it }
         }
     }
