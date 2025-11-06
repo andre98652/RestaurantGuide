@@ -15,6 +15,7 @@
 RestaurantGuide es una aplicación desarrollada en Kotlin con Jetpack Compose, que permite explorar restaurantes por categoría, visualizar detalles, administrar favoritos, leer avisos/promociones y gestionar el perfil del usuario.
 
 Este entregable (PROY2) corresponde a la implementación funcional de interfaces y lógica básica, cumpliendo con la navegación básica, persistencia local y almacenamiento de datos mediante Room y DataStore.
+prueba
 
 ---
 
