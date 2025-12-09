@@ -130,3 +130,41 @@ El proyecto cumple con todos los requerimientos del **PROY2**:
 - Navegación completa y diseño según mockups de Figma diseñados previamente para primer entregable.
 
 
+
+---
+
+## Entregable 3 (Actualización Final)
+
+En esta fase del proyecto hemos evolucionado la aplicación monoproceso local a una **aplicación conectada en tiempo real** utilizando Firebase y servicios de sistema.
+
+### Principales Funcionalidades Implementadas
+
+#### 1. Backend en la Nube (Firebase)
+Se migró la persistencia local de Room a **Firebase Cloud Firestore**, permitiendo datos compartidos en tiempo real entre todos los usuarios.
+- **Autenticación**: Registro y Login robusto con `FirebaseAuth`.
+- **Roles**: Distinción entre perfil **Dueño** (crear/editar) y **Cliente** (consumir/opinar).
+- **Storage**: Las fotos se suben a **Firebase Storage**, obteniendo URLs públicas.
+
+#### 2. Funcionalidades para Dueños
+- **Gestión Multimedia**: Subida de fotos usando **Cámara** y **Galería**. Opción de eliminar fotos de la nube.
+- **Geolocalización Inversa**: Captura automática de coordenadas GPS del local mediante `FusedLocationProviderClient`.
+- **UI Profesional**: Controles deslizantes de precio y selectores de hora nativos.
+
+#### 3. Funcionalidades para Usuarios
+- **Mapas**: Integración con **Google Maps** mediante Intents para navegar al restaurante.
+- **Reseñas Dinámicas**: Sistema de calificación 5 estrellas que actualiza el promedio del restaurante en tiempo real.
+- **Visualización**: Visor de imágenes a pantalla completa.
+
+#### 4. Notificaciones Inteligentes
+- Sistema **Reactivo Local** que monitorea cambios en Firestore.
+- Si un restaurante **Favorito** publica un aviso, se dispara una notificación de sistema (`NotificationCompat`) con estilo expandible, color de marca e icono personalizado.
+
+#### 5. Identidad Visual
+- Nuevo icono de aplicación diseñado a medida (White/Orange).
+- Integración nativa en Launcher y Splash Screen.
+
+### Archivos y Componentes Clave
+- `viewmodel/NoticeViewModel.kt`: Cerebro de las notificaciones reactivas.
+- `data/network/StorageService.kt`: Interfaz con Firebase Storage.
+- `utils/NotificationHelper.kt`: Constructor de alertas visuales.
+- `ui/screens/AddRestaurantScreen.kt` & `DetailScreen.kt`: Interfaces principales con lógica de negocio integrada.
