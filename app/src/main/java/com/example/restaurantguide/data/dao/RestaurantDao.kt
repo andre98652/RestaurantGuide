@@ -18,6 +18,9 @@ interface RestaurantDao {
     @Query("SELECT * FROM restaurants WHERE id = :id")
     suspend fun getById(id: Long): Restaurant?
 
+    @Query("SELECT * FROM restaurants WHERE ownerId = :ownerId")
+    suspend fun getByOwner(ownerId: Long): List<Restaurant>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(item: Restaurant)
 

@@ -7,4 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- Restaurant Guide Colors -->
+    <color name="red_primary">#E53935</color>
+    <color name="star_yellow">#FFC107</color>
 </resources>

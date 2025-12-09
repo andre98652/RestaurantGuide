@@ -15,20 +15,15 @@ class ProfileViewModel(app: Application) : AndroidViewModel(app) {
     private val prefs = UserPreferences(app)
 
     val profile: StateFlow<UserProfile> =
-        prefs.profile.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UserProfile("", ""))
+        prefs.profile.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UserProfile(name = "", email = ""))
 
-    init {
-        // Seed en primer arranque si está vacío
-        viewModelScope.launch {
-            val current = prefs.profile.first()
-            if (current.name.isBlank() && current.email.isBlank()) {
-                prefs.setProfile(name = "Juan Pérez", email = "juanperez@gmail.com")
-            }
-        }
-    }
+    // Removed auto-seed logic as we have explicit login now
 
     fun update(name: String, email: String) {
-        viewModelScope.launch { prefs.setProfile(name.trim(), email.trim()) }
+        viewModelScope.launch {
+            val current = prefs.profile.first()
+            prefs.setProfile(current.id, name.trim(), email.trim(), current.role)
+        }
     }
 
     fun logout() {

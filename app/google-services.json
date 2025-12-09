@@ -1,0 +1,29 @@
+  {
+  "project_info": {
+    "project_number": "1034719160096",
+    "project_id": "restaurantguideproject-17f08",
+    "storage_bucket": "restaurantguideproject-17f08.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1034719160096:android:29ec6779f5d3ef7a3f1945",
+        "android_client_info": {
+          "package_name": "com.example.restaurantguide"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYwAEr2Q-Kma950qjigkUfedkL3p1UU3I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -26,66 +26,86 @@ import androidx.compose.foundation.layout.width
 
 
 @Composable
-fun NoticesScreen(nm: NoticeViewModel, onOpenRestaurant: (Long?) -> Unit) {
+fun NoticesScreen(
+    nm: NoticeViewModel,
+    userRole: String,
+    onOpenRestaurant: (Long?) -> Unit,
+    onAddNotice: () -> Unit
+) {
     val ui by nm.ui.collectAsState()
-    val types = listOf("Todos","PROMO","NEWS","EVENT")
+    val types = listOf("Todos", "PROMO", "NEWS", "EVENT")
 
-    Column(Modifier.fillMaxSize().padding(12.dp)) {
-
-        // Barra superior: búsqueda + botón "Marcar todo"
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            OutlinedTextField(
-                value = ui.query,
-                onValueChange = nm::setQuery,
-                modifier = Modifier.weight(1f),
-                placeholder = { Text("Buscar aviso o restaurante...") },
-                singleLine = true
-            )
-            TextButton(onClick = { nm.markAllRead() }) {
-                Text("Marcar todo")
+    Scaffold(
+        floatingActionButton = {
+            if (userRole == "RESTAURANT") {
+                FloatingActionButton(
+                    onClick = onAddNotice,
+                    containerColor = RedPrimary,
+                    contentColor = OnPrimary
+                ) {
+                    Text("+", style = MaterialTheme.typography.titleLarge)
+                }
             }
         }
+    ) { padding ->
+        Column(Modifier.fillMaxSize().padding(padding).padding(12.dp)) {
 
-        Spacer(Modifier.height(8.dp))
+            // Barra superior: búsqueda + botón "Marcar todo"
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = ui.query,
+                    onValueChange = nm::setQuery,
+                    modifier = Modifier.weight(1f),
+                    placeholder = { Text("Buscar aviso o restaurante...") },
+                    singleLine = true
+                )
+                TextButton(onClick = { nm.markAllRead() }) {
+                    Text("Marcar todo")
+                }
+            }
 
-        // Chips de tipo
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(types) { t ->
-                val selected = ui.type == t
-                FilterChip(
-                    selected = selected,
-                    onClick = { nm.setType(t) },
-                    label = {
-                        Text(
-                            when (t) {
-                                "PROMO" -> "Promoción"
-                                "NEWS" -> "Novedad"
-                                "EVENT" -> "Evento"
-                                else -> "Todos"
+            Spacer(Modifier.height(8.dp))
+
+            // Chips de tipo
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(types) { t ->
+                    val selected = ui.type == t
+                    FilterChip(
+                        selected = selected,
+                        onClick = { nm.setType(t) },
+                        label = {
+                            Text(
+                                when (t) {
+                                    "PROMO" -> "Promoción"
+                                    "NEWS" -> "Novedad"
+                                    "EVENT" -> "Evento"
+                                    else -> "Todos"
+                                }
+                            )
+                        },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = RedPrimary,
+                            selectedLabelColor = OnPrimary
+                        )
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            if (ui.items.isEmpty()) {
+                Text("No hay avisos por ahora 🎉", style = MaterialTheme.typography.bodyLarge)
+            } else {
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(ui.items, key = { it.id }) { n ->
+                        NoticeCard(
+                            n,
+                            onClick = {
+                                nm.markRead(n.id)
+                                onOpenRestaurant(n.restaurantId)
                             }
                         )
-                    },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = RedPrimary,
-                        selectedLabelColor = OnPrimary
-                    )
-                )
-            }
-        }
-
-        Spacer(Modifier.height(12.dp))
-
-        if (ui.items.isEmpty()) {
-            Text("No hay avisos por ahora 🎉", style = MaterialTheme.typography.bodyLarge)
-        } else {
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(ui.items, key = { it.id }) { n ->
-                    NoticeCard(n,
-                        onClick = {
-                            nm.markRead(n.id)
-                            onOpenRestaurant(n.restaurantId)
-                        }
-                    )
+                    }
                 }
             }
         }
@@ -96,8 +116,8 @@ fun NoticesScreen(nm: NoticeViewModel, onOpenRestaurant: (Long?) -> Unit) {
 private fun NoticeCard(n: Notice, onClick: () -> Unit) {
     val emoji = when (n.type) {
         "PROMO" -> "🎉"
-        "NEWS"  -> "🧑‍🍳"
-        else    -> "🍣"
+        "NEWS" -> "🧑‍🍳"
+        else -> "🍣"
     }
     val unreadDot = if (!n.isRead) " •" else ""
 
