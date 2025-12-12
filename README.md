@@ -1,4 +1,4 @@
-# RestaurantGuide - Final Delivery
+# RestaurantGuide
 
 **Proyecto Universitario - IDNP 2025B (Entregable 3 - Final)**
 
