@@ -86,12 +86,7 @@ fun DetailScreen(id: Long, vm: RestaurantViewModel, onBack: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(item?.name ?: "Detalle") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Volver")
-                    }
-                }
+                title = { Text(item?.name ?: "Detalle") }
             )
         }
     ) { padding ->

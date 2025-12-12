@@ -9,9 +9,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
 class RestaurantRepository {
+    // 1. CONEXIÓN: Instancia que nos permite "hablar" con la Base de Datos en la Nube
     private val firestore = FirestoreService()
     private val storage = com.example.restaurantguide.data.network.StorageService()
-    private val db = FirebaseFirestore.getInstance() // Direct access for realtime listeners
+    
+    // Conexión directa para escuchar cambios en tiempo real (Flows)
+    private val db = FirebaseFirestore.getInstance()
 
     suspend fun uploadImage(uri: android.net.Uri, path: String): String {
         return storage.uploadImage(uri, path)
@@ -21,17 +24,24 @@ class RestaurantRepository {
         storage.deleteImage(url)
     }
 
+    // 2. ESCUCHA EN TIEMPO REAL:
+    // Esta función devuelve un "Flow" (un flujo de datos vivo).
+    // A diferencia de una consulta normal que pide datos una vez, esto se queda "escuchando".
     val restaurants: Flow<List<Restaurant>> = callbackFlow {
+        // "addSnapshotListener" es el "micrófono" conectado a la colección "restaurants" en la nube.
+        // Se activa CADA VEZ que alguien (tú u otro usuario) cambia algo en la base de datos.
         val listener = db.collection("restaurants").addSnapshotListener { snap, e ->
             if (e != null) {
-                close(e)
+                close(e) // Si hay error de conexión, cerramos el flujo.
                 return@addSnapshotListener
             }
             if (snap != null) {
+                // Si llegan datos nuevos, los convertimos a objetos Restaurant y los enviamos a la App.
                 val list = snap.toObjects(Restaurant::class.java)
                 trySend(list)
             }
         }
+        // Cuando la pantalla se cierra, "colgamos" la llamada para no gastar datos.
         awaitClose { listener.remove() }
     }
 
