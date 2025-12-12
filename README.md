@@ -11,7 +11,7 @@
 
 ## Descripción General
 
-RestaurantGuide es una aplicación nativa Android desarrollada en Kotlin con Jetpack Compose, diseñada para conectar comensales con experiencias gastronómicas mediante una arquitectura reactiva y conectada a la nube. En esta etapa final (Entregable 3), la aplicación evolucionó de un modelo local a una arquitectura Cloud-First, integrando Firebase para autenticación, base de datos en tiempo real y almacenamiento de imágenes. Además, incorpora servicios del sistema como geolocalización, cámara y notificaciones inteligentes para ofrecer una experiencia de usuario completa y profesional.
+RestaurantGuide es una aplicación Android desarrollada en Kotlin con Jetpack Compose, diseñada para conectar comensales con experiencias gastronómicas mediante una arquitectura conectada a la nube. En esta etapa final (Entregable 3), la aplicación evolucionó de un modelo local a una arquitectura Cloud-First, integrando Firebase para autenticación, base de datos en tiempo real y almacenamiento de imágenes. Además que incorpora servicios del sistema como geolocalización, cámara y notificaciones.
 
 ## Tecnologías y Librerías
 
