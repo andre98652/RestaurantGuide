@@ -1,6 +1,6 @@
-# RestaurantGuide 
+# RestaurantGuide - Final Delivery
 
-### Proyecto Universitario - IDNP 2025B (Entregable 2)
+### Proyecto Universitario - IDNP 2025B (Entregable 3 - Final)
 
 **Integrantes:**  
 - Delgado Allpan, Andree David  
@@ -12,21 +12,27 @@
 ---
 
 ## Descripción General
-RestaurantGuide es una aplicación desarrollada en Kotlin con Jetpack Compose, que permite explorar restaurantes por categoría, visualizar detalles, administrar favoritos, leer avisos/promociones y gestionar el perfil del usuario.
+RestaurantGuide es una aplicación nativa Android desarrollada en Kotlin con **Jetpack Compose**, diseñada para conectar comensales con experiencias gastronómicas mediante una arquitectura reactiva y conectada a la nube.
 
-Este entregable (PROY2) corresponde a la implementación funcional de interfaces y lógica básica, cumpliendo con la navegación básica, persistencia local y almacenamiento de datos mediante Room y DataStore.
-prueba
+En esta etapa final (Entregable 3), la aplicación evolucionó de un modelo local a una **arquitectura Cloud-First**, integrando **Firebase** para autenticación, base de datos en tiempo real y almacenamiento de imágenes. Además, incorpora servicios del sistema como geolocalización, cámara y notificaciones inteligentes para ofrecer una experiencia de usuario completa y profesional.
 
 ---
 
-## Tecnologías y librerías usadas
-- Kotlin / Android Studio 
-- **Jetpack Compose** (UI basada en declaración)
-- **Room** (almacenamiento local de restaurantes y avisos)
-- **DataStore Preferences** (almacenamiento de perfil de usuario)
-- **Material 3** (componentes visuales)
-- **Navigation Compose** (gestión de rutas y pantallas)
-- **Coil** (carga de imágenes desde red)
+## Tecnologías y Librerías
+- **Lenguaje:** Kotlin
+- **UI Framework:** Jetpack Compose (Material 3)
+- **Arquitectura:** MVVM (Model-View-ViewModel)
+- **Nube (Backend as a Service):** 
+    - **Firebase Authentication:** Login y registro de usuarios segurizados.
+    - **Cloud Firestore:** Base de datos NoSQL en tiempo real.
+    - **Firebase Storage:** Almacenamiento de imágenes de restaurantes.
+- **Servicios del Sistema:**
+    - **Google Maps Intents:** Navegación ligera sin SDK pesado.
+    - **FusedLocationProviderClient:** Obtención precisa de coordenadas GPS.
+    - **CameraX / ActivityResultContracts:** Captura y selección segura de fotos.
+    - **NotificationManager:** Alertas locales reactivas.
+- **Inyección de Dependencias:** Hilt (o Manual DI según implementación).
+- **Carga de Imágenes:** Coil.
 
 ---
 
@@ -34,137 +40,66 @@ prueba
 ```
 com.example.restaurantguide
 ├── data
-│   ├── dao/                 → DAOs de Room (RestaurantDao, NoticeDao)
-│   ├── model/               → Entidades (Restaurant, Notice, UserProfile)
-│   ├── database/            → AppDatabase.kt
-│   └── prefs/               → UserPreferences.kt (DataStore)
+│   ├── model/               → Data Classes (Restaurant, Notice, Review, User)
+│   ├── network/             → Servicios de Firebase (StorageService, FirestoreService)
+│   ├── repository/          → Repositorios que abstraen la fuente de datos
+│   └── prefs/               → DataStore para sesión local
 │
-├── repository/              → Repositorios para Room y DataStore
-├── viewmodel/               → Lógica de negocio (RestaurantVM, NoticeVM, ProfileVM)
+├── viewmodel/               → Lógica de presentación y Corrutinas (RestaurantVM, AuthVM)
 ├── ui/
-│   ├── components/          → BottomBar, TopBar, Chips, Cards
-│   ├── screens/             → Home, Detalle, Categoría, Avisos, Favoritos, Perfil
-│   ├── theme/               → Colores y estilos (RedPrimary, OnPrimary...)
-│   └── AppNav.kt / AppScaffold.kt → Navegación principal y estructura general
+│   ├── components/          → Elementos reusables (Cards, Chips, Inputs)
+│   ├── screens/             → Pantallas (Home, Detalle, Login, Agregar Restaurante)
+│   ├── theme/               → Sistema de diseño (Tipografía, Colores)
+│   └── navigation/          → AppNavigation con Safe Args
+│
+└── utils/                   → NotificationHelper, LocationUtils, Constantes
 ```
 
 ---
 
-## Pantallas Implementadas
+## Pantallas y Funcionalidades Clave
 
-### Home
-- Buscador de restaurantes por nombre o tipo.
-- Chips de categorías (Peruana, Italiana, Japonesa, Parrillas, etc.) con **LazyRow**.
-- Cards con imagen, dirección, precio y rating.
-- Navegación a la pantalla de detalle de cada restaurante.
+### 1. Autenticación y Perfil
+- **Login/Registro:** Validación de credenciales contra Firebase Auth.
+- **Roles:** Diferenciación entre usuarios **Clientes** (solo lectura/reseñas) y **Dueños** (gestión de locales).
 
-### Detalle
-- Imagen principal + **carrusel de fotos (LazyRow)**.
-- Información completa del restaurante (tipo, precio, descripción).
-- Botones: **Favoritos** (toggle) y **Ver ubicación** (stub para PROY3 como futura mejora).
-- Actualización directa del estado de favoritos.
+### 2. Home y Exploración
+- **Feed en Tiempo Real:** Los restaurantes aparecen instantáneamente al ser creados.
+- **Filtros Inteligentes:** Búsqueda por nombre y categorías.
+- **Diseño Adaptable:** Cards con imágenes cargadas asíncronamente vía Coil.
 
-### Favoritos
-- Lista de restaurantes marcados.
-- Filtrado y actualización automática.
-- Persistencia mediante Room.
+### 3. Detalle del Restaurante
+- **Información Rica:** Carrusel de imágenes, descripción, precio y horario.
+- **Reseñas:** Sistema de calificación con estrellas y comentarios en tiempo real.
+- **Navegación GPS:** Botón "Ver ubicación" que abre la app nativa de mapas con la ruta trazada.
 
-### Avisos
-- **LazyColumn** de avisos con tipo (Promoción, Novedad, Evento).
-- **Filtros** mediante chips (LazyRow) y búsqueda.
-- Acción: marcar como leído o abrir detalle si tiene restaurante.
-- Botón: "Marcar todo como leído".
+### 4. Gestión (Solo Dueños)
+- **Agregar Restaurante:** Formulario avanzado con validaciones.
+- **Cámara y Galería:** Integración nativa para subir fotos del local.
+- **Geolocalización Automática:** Detecta la ubicación exacta del negocio al crearlo.
 
-### Perfil
-- Datos guardados con **DataStore** (nombre y email persistentes).
-- Usuario por defecto: *Juan Pérez - juanperez@gmail.com*.
-- Botón **Editar** (modifica datos en DataStore).
-- Botón **Cerrar sesión** (borra datos almacenados).
-
----
-
-## Persistencia
-- **Room:** almacenamiento de restaurantes y avisos de forma local.
-- **DataStore:** almacenamiento persistente del perfil del usuario entre sesiones.
-
----
-
-## Flujo de Navegación
-```
-Home => Detalle
-Home => Categoría
-Detalle => Favoritos
-Avisos => Detalle (si es que aplica)
-BottomBar => (Home / Favoritos / Avisos / Perfil)
-```
+### 5. Notificaciones y Favoritos
+- **Alertas Reactivas:** Si un restaurante marcado como "Favorito" publica un aviso, el usuario recibe una notificación de sistema en la barra de estado, incluso si la app está en segundo plano.
 
 ---
 
 ## Instalación y Ejecución
-- Para ejecutar el proyecto en **Android Studio**:
 
 1. Clonar el repositorio:
-
    ```bash
    git clone https://github.com/andre98652/RestaurantGuide.git
-2. Abrir Android Studio y seleccionar "Open an Existing Project", luego buscar la carpeta del proyecto clonado.
-3.  Asegurarse de que Gradle sincronice todas las dependencias.
-4. Conectar un dispositivo físico o usar el emulador de Android Studio
-5. Ejecutar la aplicación dando al botón Run (Shift + F10).
+   ```
+2. Abrir en **Android Studio Ladybug** (o superior).
+3. Sincronizar proyecto con Gradle.
+4. Conectar un dispositivo físico o usar emulador.
+5. Ejecutar (Shift + F10).
+
+> **Nota:** El proyecto ya incluye el archivo `google-services.json` configurado para el entorno de pruebas académico.
 
 ---
 
-## Mejoras futuras (para Entregable 3)
-- Integrar **Maps Intent / GPS** en “Ver ubicación”.
-- Agregar **Foreground y Background Services** (notificaciones y sincronización).
-- Integrar login real con **DataStore** o **Firebase Auth**.
-- Mejorar experiencia visual (animaciones, transiciones y modo oscuro).
+## Conclusiones del Grupo
 
----
+El desarrollo de la fase final de **RestaurantGuide** representó un salto cualitativo en nuestra capacidad para diseñar software escalable. Más allá de simplemente "conectar Firebase", el verdadero reto técnico consistió en diseñar una aplicación asíncrona y eficiente, donde el manejo del Hilo Principal (*Main Thread*) fue crítico para evitar interrupciones visuales durante la carga de imágenes o la sincronización de datos. Decisiones arquitectónicas como reemplazar el SDK completo de mapas por una integración ligera mediante **Intents Implícitos**, o la adopción de `PickVisualMedia` para gestionar imágenes sin comprometer la privacidad del usuario, evidencian un aprendizaje profundo sobre optimización de recursos y seguridad en Android moderno. Logramos demostrar que es posible construir una app robusta y rica en funcionalidades (GPS, Cámara, Nube) sin sobrecargar innecesariamente el dispositivo ni la APK final.
 
-## Conclusiones
-El proyecto cumple con todos los requerimientos del **PROY2**:
-- Estructura modular (MVVM + Room + DataStore).
-- 70%+ de pantallas implementadas.
-- Comportamiento funcional y persistente.
-- Navegación completa y diseño según mockups de Figma diseñados previamente para primer entregable.
-
-
-
----
-
-## Entregable 3 (Actualización Final)
-
-En esta fase del proyecto hemos evolucionado la aplicación monoproceso local a una **aplicación conectada en tiempo real** utilizando Firebase y servicios de sistema.
-
-### Principales Funcionalidades Implementadas
-
-#### 1. Backend en la Nube (Firebase)
-Se migró la persistencia local de Room a **Firebase Cloud Firestore**, permitiendo datos compartidos en tiempo real entre todos los usuarios.
-- **Autenticación**: Registro y Login robusto con `FirebaseAuth`.
-- **Roles**: Distinción entre perfil **Dueño** (crear/editar) y **Cliente** (consumir/opinar).
-- **Storage**: Las fotos se suben a **Firebase Storage**, obteniendo URLs públicas.
-
-#### 2. Funcionalidades para Dueños
-- **Gestión Multimedia**: Subida de fotos usando **Cámara** y **Galería**. Opción de eliminar fotos de la nube.
-- **Geolocalización Inversa**: Captura automática de coordenadas GPS del local mediante `FusedLocationProviderClient`.
-- **UI Profesional**: Controles deslizantes de precio y selectores de hora nativos.
-
-#### 3. Funcionalidades para Usuarios
-- **Mapas**: Integración con **Google Maps** mediante Intents para navegar al restaurante.
-- **Reseñas Dinámicas**: Sistema de calificación 5 estrellas que actualiza el promedio del restaurante en tiempo real.
-- **Visualización**: Visor de imágenes a pantalla completa.
-
-#### 4. Notificaciones Inteligentes
-- Sistema **Reactivo Local** que monitorea cambios en Firestore.
-- Si un restaurante **Favorito** publica un aviso, se dispara una notificación de sistema (`NotificationCompat`) con estilo expandible, color de marca e icono personalizado.
-
-#### 5. Identidad Visual
-- Nuevo icono de aplicación diseñado a medida (White/Orange).
-- Integración nativa en Launcher y Splash Screen.
-
-### Archivos y Componentes Clave
-- `viewmodel/NoticeViewModel.kt`: Cerebro de las notificaciones reactivas.
-- `data/network/StorageService.kt`: Interfaz con Firebase Storage.
-- `utils/NotificationHelper.kt`: Constructor de alertas visuales.
-- `ui/screens/AddRestaurantScreen.kt` & `DetailScreen.kt`: Interfaces principales con lógica de negocio integrada.
+En cuanto a la metodología de trabajo, el uso estratégico de la Inteligencia Artificial actuó como un catalizador para la productividad, permitiéndonos iterar rápidamente sobre la interfaz en Jetpack Compose. Sin embargo, mantuvimos un enfoque crítico: delegamos a la IA la generación de código repetitivo (herramienta de soporte), pero asumimos el control total sobre la lógica "core" y de seguridad, validando cada decisión, como los permisos en tiempo de ejecución, directamente con la documentación oficial. Esta dualidad entre agilidad (IA) y rigor técnico (Documentación) nos permitió no solo cumplir con los requisitos académicos del curso, sino entregar un producto final pulido, que respeta las buenas prácticas de la industria y garantiza una experiencia de usuario fluida y segura.
