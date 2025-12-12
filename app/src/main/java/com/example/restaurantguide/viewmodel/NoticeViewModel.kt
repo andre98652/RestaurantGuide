@@ -22,6 +22,7 @@ data class NoticeUiState(
 )
 
 class NoticeViewModel(app: Application) : AndroidViewModel(app) {
+    // Repositorios: necesitamos acceso a Avisos, pero también a Restaurantes (para ver cuáles son favoritos) y Preferencias (para saber quién eres)
     private val repo = NoticeRepository()
     private val rRepo = com.example.restaurantguide.repository.RestaurantRepository()
     private val userPrefs = com.example.restaurantguide.data.prefs.UserPreferences(app)
@@ -36,8 +37,8 @@ class NoticeViewModel(app: Application) : AndroidViewModel(app) {
     val ui: StateFlow<NoticeUiState> = _ui.asStateFlow()
 
     init {
-        // Notification Logic for User B (Consumer)
-        // Listen to 'all' flow. If a new notice appears (id > startTimestamp) AND it matches a favorite, notify.
+        // LÓGICA DE NOTIFICACIONES:
+        // Escucha la tubería de 'all' (todos los avisos). Si llega uno nuevo y es de un restaurante favorito -> Notificación.
         viewModelScope.launch {
             // Wait for initial load
             val initial = all.filter { it.isNotEmpty() }.first()
@@ -101,7 +102,8 @@ class NoticeViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
 
-        // Mantener lista filtrada... (existing logic)
+        // MANTENER LA LISTA FILTRADA:
+        // Combina la lista de avisos (all) con los filtros de la interfaz (_ui)
         viewModelScope.launch {
             combine(all, _ui) { list, ui ->
                 val filtered = list
@@ -135,6 +137,7 @@ class NoticeViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch { repo.markAllRead() }
     }
 
+    // Publicar un aviso nuevo (solo para dueños)
     fun addNotice(ownerId: Long, title: String, summary: String, type: String, hoursInDuration: Int, onResult: (Boolean) -> Unit) {
         viewModelScope.launch {
             val restaurants = rRepo.getByOwner(ownerId)

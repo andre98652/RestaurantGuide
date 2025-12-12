@@ -12,6 +12,8 @@ class NoticeRepository {
     private val firestore = FirestoreService()
     private val db = FirebaseFirestore.getInstance()
 
+    // Escucha en tiempo real la colección de avisos ("notices")
+    // Esto se usa en el carrusel de la pantalla principal.
     fun all(): Flow<List<Notice>> = callbackFlow {
         val listener = db.collection("notices").addSnapshotListener { snap, e ->
             if (e != null) {
@@ -26,14 +28,13 @@ class NoticeRepository {
         awaitClose { listener.remove() }
     }
 
+    // Guarda un aviso nuevo (promoción)
     suspend fun upsert(notice: Notice) {
         firestore.saveNotice(notice)
     }
 
     suspend fun markRead(id: Long) {
-        // TODO: Implement per-user read status using subcollection or local storage
-        // For now, no-op or global update (undesirable). 
-        // Leaving empty for this migration step.
+        // No-op
     }
 
     suspend fun markAllRead() {

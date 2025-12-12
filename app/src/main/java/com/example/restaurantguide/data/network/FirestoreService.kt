@@ -9,11 +9,12 @@ import kotlinx.coroutines.tasks.await
 class FirestoreService {
     private val db = FirebaseFirestore.getInstance()
 
-    // --- Users ---
+    // --- USERS (USUARIOS) ---
+    // Guarda o actualiza los datos del usuario en la colección "users"
     suspend fun saveUser(uid: String, name: String, email: String, role: String, legacyId: Long) {
         val user = hashMapOf(
             "id" to uid,
-            "legacyId" to legacyId, // Saved for backward compatibility
+            "legacyId" to legacyId, // compatibilidad con versiones anteriores
             "name" to name,
             "email" to email,
             "role" to role
@@ -21,6 +22,7 @@ class FirestoreService {
         db.collection("users").document(uid).set(user, SetOptions.merge()).await()
     }
 
+    // Descarga el perfil de un usuario usando su ID único (UID)
     suspend fun getUserProfile(uid: String): UserProfile? {
         val doc = db.collection("users").document(uid).get().await()
         return if (doc.exists()) {
@@ -33,13 +35,15 @@ class FirestoreService {
         } else null
     }
 
-    // --- Restaurants ---
+    // --- RESTAURANTS (RESTAURANTES) ---
+    // Descarga TODOS los restaurantes de la nube
     suspend fun getRestaurants(): List<com.example.restaurantguide.data.model.Restaurant> {
         return db.collection("restaurants").get().await().map { doc ->
             doc.toObject(com.example.restaurantguide.data.model.Restaurant::class.java)
         }
     }
 
+    // Descarga solo los restaurantes que pertenecen a un dueño específico
     suspend fun getRestaurantsByOwner(ownerId: Long): List<com.example.restaurantguide.data.model.Restaurant> {
         return db.collection("restaurants")
             .whereEqualTo("ownerId", ownerId)
@@ -47,6 +51,7 @@ class FirestoreService {
             .map { it.toObject(com.example.restaurantguide.data.model.Restaurant::class.java) }
     }
 
+    // Guarda un restaurante nuevo o actualiza uno existente
     suspend fun saveRestaurant(r: com.example.restaurantguide.data.model.Restaurant) {
         // Use ID as doc ID if > 0, else generate
         val id = if (r.id == 0L) System.currentTimeMillis() else r.id
@@ -59,7 +64,8 @@ class FirestoreService {
          return if (snap.exists()) snap.toObject(com.example.restaurantguide.data.model.Restaurant::class.java) else null
     }
 
-    // --- Notices ---
+    // --- NOTICES (AVISOS) ---
+    // Descarga los avisos para el carrusel
     suspend fun getNotices(): List<com.example.restaurantguide.data.model.Notice> {
         return db.collection("notices").get().await().map { doc ->
             doc.toObject(com.example.restaurantguide.data.model.Notice::class.java)
@@ -72,7 +78,8 @@ class FirestoreService {
         db.collection("notices").document(id.toString()).set(toSave).await()
     }
 
-    // --- Favorites ---
+    // --- FAVORITES (FAVORITOS) ---
+    // Agrega o Quita un like. Si ya existe el like, lo borra (dislike); si no, lo crea.
     suspend fun toggleFavorite(userId: Long, restaurantId: Long) {
         // Collection: users/{uid}/favorites/{restId}
         // Ideally we map userId(Long) to FirebaseUid(String). 
@@ -91,6 +98,7 @@ class FirestoreService {
         }
     }
     
+    // Obtiene la lista de IDs de restaurantes que el usuario ha marcado como favoritos
     suspend fun getFavorites(userId: Long): List<Long> {
         return db.collection("favorites")
             .whereEqualTo("userId", userId)
@@ -98,6 +106,7 @@ class FirestoreService {
             .mapNotNull { it.getLong("restaurantId") }
     }
 
+    // Cuenta cuántos likes tiene un restaurante en total
     suspend fun getFavoriteCount(restaurantId: Long): Int {
         return db.collection("favorites")
             .whereEqualTo("restaurantId", restaurantId)
@@ -105,7 +114,8 @@ class FirestoreService {
             .size()
     }
 
-    // --- Reviews ---
+    // --- REVIEWS (RESEÑAS) ---
+    // Descarga los comentarios de un restaurante específico
     suspend fun getReviews(restaurantId: Long): List<com.example.restaurantguide.data.model.Review> {
          return db.collection("reviews")
             .whereEqualTo("restaurantId", restaurantId)
@@ -113,6 +123,7 @@ class FirestoreService {
             .map { it.toObject(com.example.restaurantguide.data.model.Review::class.java) }
     }
 
+    // Guarda o envía un comentario nuevo a la nube
     suspend fun saveReview(review: com.example.restaurantguide.data.model.Review) {
         val id = if (review.id == 0L) System.currentTimeMillis() else review.id
         val toSave = review.copy(id = id)

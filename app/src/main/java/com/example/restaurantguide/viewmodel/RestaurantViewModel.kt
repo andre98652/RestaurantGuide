@@ -15,11 +15,14 @@ data class HomeUiState(
 )
 
 class RestaurantViewModel(app: Application) : AndroidViewModel(app) {
+    // REPOSITORIO: El "Jefe de Cocina" que nos da los datos.
     private val repo = RestaurantRepository()
     private val userPrefs = com.example.restaurantguide.data.prefs.UserPreferences(app)
     
     val userId = userPrefs.profile.map { it.id }.stateIn(viewModelScope, SharingStarted.Eagerly, 0L)
 
+    // FLUJO DE TODOS LOS RESTAURANTES:
+    // Esta lista se actualiza sola en tiempo real desde Firebase.
     val all: StateFlow<List<Restaurant>> =
         repo.restaurants.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
         
@@ -38,7 +41,8 @@ class RestaurantViewModel(app: Application) : AndroidViewModel(app) {
         // repo.restaurants is a flow, so we don't check count synchronously.
         // Skipping seed logic for now as user likely verified setup.
 
-        // Update Home state based on filters
+        // LÓGICA DE FILTRADO (Buscador y Categorías):
+        // Combina la lista completa (all) con el estado de la UI (_home) para filtrar.
         viewModelScope.launch {
             combine(all, _home) { list, ui ->
                 val filtered = list.filter { r ->
@@ -57,9 +61,12 @@ class RestaurantViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    // Funciones para que la Vista avise que el usuario escribió algo en el buscador
     fun updateQuery(q: String) { _home.update { it.copy(query = q) } }
     fun selectCuisine(c: String) { _home.update { it.copy(selectedCuisine = c) } }
 
+    // FAVORITOS:
+    // Detecta quién es el usuario y pide su lista de restaurantes favoritos.
     val favorites: StateFlow<List<Restaurant>> = userId.flatMapLatest { uid ->
         if (uid != 0L) {
              // Get list of favorite IDs, then map to Restaurants
@@ -79,6 +86,7 @@ class RestaurantViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch { onResult(repo.getById(id)) }
     }
 
+    // Acción de dar Like/Dislike
     fun toggleFavorite(id: Long) {
         val uid = userId.value
         if (uid != 0L) {
@@ -95,6 +103,7 @@ class RestaurantViewModel(app: Application) : AndroidViewModel(app) {
          repo.getReviewsForRestaurant(id).collect { emit(it) }
     }
     
+    // Agregar una Reseña nueva (solo si estás logueado)
     fun addReview(restaurantId: Long, comment: String, rating: Int) {
         val uid = userId.value
         if (uid == 0L) return

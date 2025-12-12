@@ -26,16 +26,16 @@ object NotificationHelper {
     }
 
     fun showNotification(context: Context, title: String, message: String) {
-        // Use custom color (RedPrimary-like color)
+        // Usar color personalizado (Similar al Rojo Primario)
         val color = 0xFFE53935.toInt() 
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(com.example.restaurantguide.R.drawable.ic_restaurant_logo) // Use our new logo
             .setContentTitle(title)
             .setContentText(message)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(message)) // Expandable text
-            .setColor(color) // Custom accent color
-            .setPriority(NotificationCompat.PRIORITY_HIGH) // High priority for heads-up
+            .setStyle(NotificationCompat.BigTextStyle().bigText(message)) // Texto expandible
+            .setColor(color) // Color de acento personalizado
+            .setPriority(NotificationCompat.PRIORITY_HIGH) // Alta prioridad para notificaciones emergentes
             .setAutoCancel(true)
 
         with(NotificationManagerCompat.from(context)) {

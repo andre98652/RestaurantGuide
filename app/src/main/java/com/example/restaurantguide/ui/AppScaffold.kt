@@ -35,7 +35,7 @@ fun AppScaffold(
     LaunchedEffect(authState.isLoggedIn) {
         if (!authState.isLoggedIn && currentRoute != Routes.LOGIN) {
             navController.navigate(Routes.LOGIN) {
-                // Pop everything up to (and including) the start destination to ensure a clean slate
+                // Borrar todo el historial hasta el inicio para asegurar un estado limpio
                 popUpTo(0) { inclusive = true }
                 launchSingleTop = true
             }

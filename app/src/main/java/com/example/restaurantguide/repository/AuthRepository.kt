@@ -13,6 +13,8 @@ class AuthRepository(
     
     val userProfile = prefs.profile
 
+    // Inicia sesión usando correo y contraseña contra Firebase Auth
+    // Además, descarga el perfil técnico (rol, nombre) desde Firestore.
     suspend fun login(email: String, password: String): Boolean {
         return try {
             val result = auth.signInWithEmailAndPassword(email, password).await()
@@ -33,6 +35,7 @@ class AuthRepository(
         }
     }
 
+    // Crea un usuario nuevo en Firebase Auth y guarda sus datos extra en Firestore
     suspend fun register(name: String, email: String, password: String, role: String): Boolean {
         // Let exceptions bubble up to ViewModel
         val result = auth.createUserWithEmailAndPassword(email, password).await()
@@ -49,11 +52,13 @@ class AuthRepository(
         return true
     }
 
+    // Cierra la sesión
     suspend fun logout() {
         auth.signOut()
         prefs.clear()
     }
 
+    // Verifica si hay una sesión activa
     suspend fun isLoggedIn(): Boolean {
         // We rely on local prefs for session state to keep UI sync
         // But we can check Auth

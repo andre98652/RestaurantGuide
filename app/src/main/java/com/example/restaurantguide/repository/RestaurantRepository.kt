@@ -16,10 +16,12 @@ class RestaurantRepository {
     // Conexión directa para escuchar cambios en tiempo real (Flows)
     private val db = FirebaseFirestore.getInstance()
 
+    // Sube una imagen a Firebase Storage (la nube de archivos)
     suspend fun uploadImage(uri: android.net.Uri, path: String): String {
         return storage.uploadImage(uri, path)
     }
 
+    // Borra una imagen de Firebase Storage
     suspend fun deleteImage(url: String) {
         storage.deleteImage(url)
     }
@@ -45,19 +47,23 @@ class RestaurantRepository {
         awaitClose { listener.remove() }
     }
 
+    // Obtiene un restaurante específico por su ID
     suspend fun getById(id: Long): Restaurant? {
         return firestore.getRestaurant(id)
     }
 
+    // Obtiene los restaurantes de un dueño específico (para el panel de administración)
     suspend fun getByOwner(ownerId: Long): List<Restaurant> {
         return firestore.getRestaurantsByOwner(ownerId)
     }
 
+    // Guarda (update) o Inserta (insert) un restaurante nuevo
     suspend fun upsert(r: Restaurant) {
         firestore.saveRestaurant(r)
     }
     
     // Favorites
+    // Da like o quita el like a un restaurante
     suspend fun toggleFavorite(userId: Long, restaurantId: Long) {
         firestore.toggleFavorite(userId, restaurantId)
     }
@@ -66,7 +72,7 @@ class RestaurantRepository {
         return firestore.getFavoriteCount(restaurantId)
     }
 
-    // Since we need "isFavorite" for the UI, we ideally need a flow of favorites for the user
+    // Escucha en tiempo real cuáles son los favoritos del usuario para pintar los corazones rojos
     fun getFavoritesForUser(userId: Long): Flow<List<Long>> = callbackFlow {
         val listener = db.collection("favorites")
             .whereEqualTo("userId", userId)

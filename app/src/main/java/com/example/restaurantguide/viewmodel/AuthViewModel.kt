@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 
 enum class AuthMode { LOGIN, REGISTER }
 
+// Estado de la pantalla de Autenticación (Login/Registro)
 data class AuthUiState(
     val id: Long = 0, // Added id
     val mode: AuthMode = AuthMode.LOGIN,
@@ -27,14 +28,19 @@ data class AuthUiState(
 )
 
 class AuthViewModel(app: Application) : AndroidViewModel(app) {
+    // Repositorio de Autenticación
     private val repo = AuthRepository(
         UserPreferences(app)
     )
 
+    // El estado mutable privado (solo el ViewModel lo cambia)
     private val _uiState = MutableStateFlow(AuthUiState())
+    // El estado público (la Vista solo lo lee)
     val uiState = _uiState.asStateFlow()
 
     init {
+        // Escuchamos cambios en el perfil (UserPreferences/Repositorio)
+        // Si el repositorio dice que hay usuario, actualizamos el estado a "Logueado".
         viewModelScope.launch {
             repo.userProfile.collect { profile ->
                 _uiState.update {
@@ -52,6 +58,7 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    // Manejadores de eventos (cuando el usuario escribe o cambia el modo)
     fun onToggleMode() {
         _uiState.update { current ->
             current.copy(
@@ -67,6 +74,7 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
     fun onNameChange(v: String) { _uiState.update { it.copy(name = v) } }
     fun onRoleChange(v: String) { _uiState.update { it.copy(role = v) } }
 
+    // Al hacer clic en el botón "Ingresar" o "Registrar"
     fun submit() {
         val s = _uiState.value
         if (s.email.isBlank() || s.password.isBlank()) {
@@ -101,6 +109,7 @@ class AuthViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
     
+    // Cerrar sesión
     fun logout() {
         viewModelScope.launch {
             repo.logout()

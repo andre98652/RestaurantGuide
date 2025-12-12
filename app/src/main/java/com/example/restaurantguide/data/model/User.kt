@@ -8,7 +8,7 @@ data class User(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val name: String,
     val email: String,
-    val password: String, // Store plaintext for this simple demo, or hashed if needed.
+    val password: String, // Texto plano para esta demo (hash real en producción)
     val role: String, // "USER" or "RESTAURANT"
     val avatarUrl: String? = null
 )

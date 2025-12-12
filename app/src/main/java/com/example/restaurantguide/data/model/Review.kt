@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class Review(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val userId: Long = 0,
-    val userName: String = "", // Denormalized for simpler UI
+    val userName: String = "", // Denormalizado para facilitar la UI
     val restaurantId: Long = 0,
     val comment: String = "",
     val rating: Int = 0 // 1..5

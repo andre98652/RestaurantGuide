@@ -36,13 +36,13 @@ fun AppNav(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Routes.LOGIN, // Start at Login
+        startDestination = Routes.LOGIN, // Iniciar en Login
         modifier = modifier
     ) {
-        // Global Auth Observer
+        // Observador Global de Autenticación
         composable(Routes.LOGIN) {
             AuthScreen(vm = authVm) {
-                // On Success -> Go Home, clear backstack
+                // Al tener éxito -> Ir a Inicio, limpiar pila
                 navController.navigate(Routes.HOME) {
                     popUpTo(Routes.LOGIN) { inclusive = true }
                 }
