@@ -23,8 +23,10 @@ data class NoticeUiState(
 
 class NoticeViewModel(app: Application) : AndroidViewModel(app) {
     // Repositorios: necesitamos acceso a Avisos, pero también a Restaurantes (para ver cuáles son favoritos) y Preferencias (para saber quién eres)
-    private val repo = NoticeRepository()
-    private val rRepo = com.example.restaurantguide.repository.RestaurantRepository()
+    // Repositorios: necesitamos acceso a Avisos, pero también a Restaurantes (para ver cuáles son favoritos) y Preferencias (para saber quién eres)
+    private val db = com.example.restaurantguide.data.database.AppDatabase.get(app)
+    private val repo = NoticeRepository(db)
+    private val rRepo = com.example.restaurantguide.repository.RestaurantRepository(db)
     private val userPrefs = com.example.restaurantguide.data.prefs.UserPreferences(app)
     
     // We need user ID to know which favorites to check

@@ -24,11 +24,14 @@ interface RestaurantDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(item: Restaurant)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertAll(items: List<Restaurant>)
+
     @Update suspend fun update(item: Restaurant)
     @Delete suspend fun delete(item: Restaurant)
 
     @Query("DELETE FROM restaurants")
-    suspend fun clear()
+    suspend fun clearAll()
 
     @Query("SELECT COUNT(*) FROM restaurants")
     suspend fun count(): Int

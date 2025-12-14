@@ -12,6 +12,9 @@ interface NoticeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(item: Notice)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertAll(items: List<Notice>)
+
     @Query("DELETE FROM notices")
     suspend fun clear()
 

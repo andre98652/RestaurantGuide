@@ -16,7 +16,8 @@ data class HomeUiState(
 
 class RestaurantViewModel(app: Application) : AndroidViewModel(app) {
     // REPOSITORIO: El "Jefe de Cocina" que nos da los datos.
-    private val repo = RestaurantRepository()
+    // REPOSITORIO: El "Jefe de Cocina" que nos da los datos.
+    private val repo = RestaurantRepository(com.example.restaurantguide.data.database.AppDatabase.get(app))
     private val userPrefs = com.example.restaurantguide.data.prefs.UserPreferences(app)
     
     val userId = userPrefs.profile.map { it.id }.stateIn(viewModelScope, SharingStarted.Eagerly, 0L)
